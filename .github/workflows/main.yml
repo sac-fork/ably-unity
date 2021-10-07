@@ -9,8 +9,8 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        # projectPath:
-        #   - test-project
+        projectPath:
+          - ./
         unityVersion:
           - 2020.3.19f1
         testMode:
@@ -23,22 +23,22 @@ jobs:
         with:
           lfs: true
 
-      # # Cache
-      # - uses: actions/cache@v2
-      #   with:
-      #     path: Library
-      #     key: Library-${{ hashFiles('Assets/**', 'Packages/**', 'ProjectSettings/**') }}
-      #     restore-keys: |
-      #       Library-
+      # Cache
+      - uses: actions/cache@v2
+        with:
+          path: Library
+          key: Library-${{ hashFiles('Assets/**', 'Packages/**', 'ProjectSettings/**') }}
+          restore-keys: |
+            Library-
 
       # Test
       - name: Run tests
-        uses: game-ci/unity-test-runner@v2
+        uses: webbertakken/unity-test-runner@v2.0-alpha-1
         id: tests
         env:
           UNITY_LICENSE: ${{ secrets.UNITY_LICENSE }}
         with:
-          # projectPath: ${{ matrix.projectPath }}
+          projectPath: ${{ matrix.projectPath }}
           testMode: ${{ matrix.testMode }}
           artifactsPath: ${{ matrix.testMode }}-artifacts
           githubToken: ${{ secrets.GITHUB_TOKEN }}
@@ -50,4 +50,4 @@ jobs:
         if: always()
         with:
           name: Test results for ${{ matrix.testMode }}
-          path: ${{ steps.tests.outputs.artifactsPath }}
+          path: ${{ steps.tests.outputs.artifactsPath }} 
