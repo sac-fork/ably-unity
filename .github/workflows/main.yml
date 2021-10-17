@@ -65,14 +65,14 @@ jobs:
       - name: Extract unity package
         id: extract_unity_package
         uses: FrostBanditTeam/extract-unity-package-action@1
-        # with:
+        with:
           #Specify the unity project path, relative to the repo root.
           # unityProjectPath: './'
           # packagePath: 'Assets'
-          #outputPackagePath: './artifacts/output.unitypackage'
+          outputPackagePath: './artifacts/ably.unitypackage'
 
       - name: Upload artifact
         uses: actions/upload-artifact@v2
         with:
           name: Output package
-          path: ${{ steps.extract_unity_package.outputs.artifactsPath }}        
+          path: ${{ steps.extract_unity_package.outputs.artifactsPath }}
