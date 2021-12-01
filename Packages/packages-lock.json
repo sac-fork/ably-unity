@@ -1,5 +1,11 @@
 {
   "dependencies": {
+    "com.boundfoxstudios.fluentassertions": {
+      "version": "file:C:/Users/sachi/Downloads/fluentassertions-unity-5.10.3-r5/fluentassertions-unity-5.10.3-r5",
+      "depth": 0,
+      "source": "local",
+      "dependencies": {}
+    },
     "com.unity.2d.animation": {
       "version": "5.0.7",
       "depth": 0,
