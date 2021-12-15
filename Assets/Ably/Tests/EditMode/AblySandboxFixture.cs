@@ -39,7 +39,8 @@ namespace Assets.Ably.Tests.EditMode
                 settings.Environment = environment;
             }
 
-            JObject testAppSpec = JObject.Parse(ResourceHelper.GetResource("test-app-setup.json"));
+            // JObject testAppSpec = JObject.Parse(ResourceHelper.GetResource("test-app-setup.json"));
+            JObject testAppSpec = JObject.Parse(TestAppSetup._testAppSetup);
 
             var cipher = testAppSpec["cipher"];
             settings.CipherParams = new CipherParams(
@@ -109,7 +110,8 @@ namespace Assets.Ably.Tests.EditMode
             var interval1 = lastInterval - TimeSpan.FromMinutes(120);
             var interval2 = lastInterval - TimeSpan.FromMinutes(60);
             var interval3 = lastInterval;
-            var json = ResourceHelper.GetResource("StatsFixture.json");
+            // var json = ResourceHelper.GetResource("StatsFixture.json");
+            var json = TestAppSetup._statsFixture;
             json = json.Replace("[[Interval1]]", interval1.ToString("yyyy-MM-dd:HH:mm"));
             json = json.Replace("[[Interval2]]", interval2.ToString("yyyy-MM-dd:HH:mm"));
             json = json.Replace("[[Interval3]]", interval3.ToString("yyyy-MM-dd:HH:mm"));

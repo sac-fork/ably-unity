@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
@@ -8,6 +9,8 @@ using FluentAssertions;
 using IO.Ably;
 using IO.Ably.Realtime;
 using NUnit.Framework;
+using UnityEngine;
+using UnityEngine.TestTools;
 
 namespace Assets.Ably.Tests.EditMode
 {
@@ -22,16 +25,18 @@ namespace Assets.Ably.Tests.EditMode
             _sandboxFixture = new AblySandboxFixture();
         }
 
-        [SetUp]
-        public void Init()
+        [UnitySetUp]
+        public IEnumerator Init()
         {
             UnitySandbox = new UnitySandboxSpecs(_sandboxFixture);
+            yield return null;
         }
 
-        [TearDown]
-        public void TearDown()
+        [UnityTearDown]
+        public IEnumerator TearDown()
         {
             UnitySandbox.Dispose();
+            yield return null;
         }
 
         public UnitySandboxSpecs UnitySandbox { get; set; }
@@ -60,25 +65,51 @@ namespace Assets.Ably.Tests.EditMode
             Task.Run(async () => await asyncTask).GetAwaiter().GetResult();
         }
 
-        [Test]
-        public void RSA4Helper_RestClient_ShouldTrackRequests()
+        public static IEnumerator Await(Task task)
         {
-            var protocol = Protocol.Json;
-            var authClient = RunAsyncMethodSync(UnitySandbox.GetRestClient(protocol));
-            var token = RunAsyncMethodSync(authClient.AblyAuth.RequestTokenAsync(new TokenParams { ClientId = "123" }));
+            while (!task.IsCompleted) { yield return null; }
+            if (task.IsFaulted) { throw task.Exception; }
+        }
+
+        public static IEnumerator Await(Func<Task> taskDelegate)
+        {
+            return Await(taskDelegate.Invoke());
+        }
+
+        [UnityTest]
+        public IEnumerator RSA4Helper_RestClient_ShouldTrackRequests()
+        {
+            yield return Await(async () =>
+            {
+                await UnityTest_RSA4Helper_RestClient_ShouldTrackRequests();
+            });
+        }
+
+        public async Task UnityTest_RSA4Helper_RestClient_ShouldTrackRequests(Protocol protocol = Protocol.Json)
+        {
+            var authClient = await UnitySandbox.GetRestClient(protocol);
+            var token = await authClient.AblyAuth.RequestTokenAsync(new TokenParams { ClientId = "123" });
             var helper = new RSA4Helper(this);
-            var restClient = RunAsyncMethodSync(helper.GetRestClientWithRequests(protocol, token, invalidateKey: true));
+            var restClient = await helper.GetRestClientWithRequests(protocol, token, invalidateKey: true);
             helper.Requests.Count.Should().Be(0);
-            RunAsyncMethodSync(restClient.TimeAsync());
+            await restClient.TimeAsync();
             helper.Requests.Count.Should().Be(1);
-            var realtimeClient = RunAsyncMethodSync(helper.GetRealTimeClientWithRequests(protocol, token, invalidateKey: true));
+            var realtimeClient = await helper.GetRealTimeClientWithRequests(protocol, token, invalidateKey: true);
             helper.Requests.Count.Should().Be(1);
-            RunAsyncMethodSync(realtimeClient.RestClient.TimeAsync());
+            await realtimeClient.RestClient.TimeAsync();
             helper.Requests.Count.Should().Be(2);
         }
 
-        [Test]
-        public async Task RestClient_WhenTokenExpired_ShouldNotRetryAndRaiseError(Protocol protocol = Protocol.Json)
+        [UnityTest]
+        public IEnumerator RestClient_WhenTokenExpired_ShouldNotRetryAndRaiseError()
+        {
+            yield return Await(async () =>
+            {
+                await UnityTest_RestClient_WhenTokenExpired_ShouldNotRetryAndRaiseError();
+            });
+        }
+        
+        public async Task UnityTest_RestClient_WhenTokenExpired_ShouldNotRetryAndRaiseError(Protocol protocol = Protocol.Json)
         {
             var helper = new RSA4Helper(this);
 
@@ -121,7 +152,7 @@ namespace Assets.Ably.Tests.EditMode
         }
 
         [Test]
-        public async Task RealtimeClient_NewInstanceWithExpiredToken_ShouldNotRetryAndHaveError(Protocol protocol = Protocol.Json)
+        public async Task UnityTest_RealtimeClient_NewInstanceWithExpiredToken_ShouldNotRetryAndHaveError(Protocol protocol = Protocol.Json)
         {
             var helper = new RSA4Helper(this);
             var authClient = await UnitySandbox.GetRestClient(protocol);
@@ -149,7 +180,7 @@ namespace Assets.Ably.Tests.EditMode
         }
 
         [Test]
-        public async Task RealtimeClient_ConnectedWithExpiringToken_WhenTokenExpired_ShouldNotRetryAndHaveError(Protocol protocol = Protocol.Json)
+        public async Task UnityTest_RealtimeClient_ConnectedWithExpiringToken_WhenTokenExpired_ShouldNotRetryAndHaveError(Protocol protocol = Protocol.Json)
         {
             var helper = new RSA4Helper(this);
 
@@ -173,7 +204,7 @@ namespace Assets.Ably.Tests.EditMode
         }
 
         [Test]
-        public async Task RealtimeWithAuthError_WhenTokenExpired_ShouldRetry_WhenRetryFails_ShouldSetError(Protocol protocol = Protocol.Json)
+        public async Task UnityTest_UnityTest_RealtimeWithAuthError_WhenTokenExpired_ShouldRetry_WhenRetryFails_ShouldSetError(Protocol protocol = Protocol.Json)
         {
             var helper = new RSA4Helper(this);
 
@@ -210,7 +241,7 @@ namespace Assets.Ably.Tests.EditMode
         }
 
         [Test]
-        public async Task RealTimeWithAuthCallback_WhenTokenExpired_ShouldRetry_WhenRetryFails_ShouldSetError(Protocol protocol = Protocol.Json)
+        public async Task UnityTest_RealTimeWithAuthCallback_WhenTokenExpired_ShouldRetry_WhenRetryFails_ShouldSetError(Protocol protocol = Protocol.Json)
         {
             // create a short lived token
             var authRestClient = await UnitySandbox.GetRestClient(protocol);
@@ -247,7 +278,7 @@ namespace Assets.Ably.Tests.EditMode
         }
 
         [Test]
-        public async Task RealTimeWithAuthUrl_WhenTokenExpired_ShouldRetry_WhenRetryFails_ShouldSetError(Protocol protocol = Protocol.Json)
+        public async Task UnityTest_RealTimeWithAuthUrl_WhenTokenExpired_ShouldRetry_WhenRetryFails_ShouldSetError(Protocol protocol = Protocol.Json)
         {
             var authRestClient = await UnitySandbox.GetRestClient(protocol);
             var token = await authRestClient.Auth.RequestTokenAsync(new TokenParams
@@ -278,7 +309,7 @@ namespace Assets.Ably.Tests.EditMode
         }
 
         [Test]
-        public async Task RealTimeWithAuthUrl_WhenTokenExpired_And_WithServerTime_ShouldRenewToken(Protocol protocol = Protocol.Json)
+        public async Task UnityTest_RealTimeWithAuthUrl_WhenTokenExpired_And_WithServerTime_ShouldRenewToken(Protocol protocol = Protocol.Json)
         {
             var authRestClient = await UnitySandbox.GetRestClient(protocol);
             var token = await authRestClient.Auth.RequestTokenAsync(new TokenParams
@@ -301,7 +332,7 @@ namespace Assets.Ably.Tests.EditMode
         }
 
         [Test]
-        public async Task RealTimeWithAuthUrl_WhenTokenExpired_And_WithServerTime_And_NoWayToRenewToken_ShouldErrorBeforeCallingServer(Protocol protocol = Protocol.Json)
+        public async Task UnityTest_RealTimeWithAuthUrl_WhenTokenExpired_And_WithServerTime_And_NoWayToRenewToken_ShouldErrorBeforeCallingServer(Protocol protocol = Protocol.Json)
         {
             var authRestClient = await UnitySandbox.GetRestClient(protocol);
             var token = await authRestClient.Auth.RequestTokenAsync(new TokenParams
@@ -338,7 +369,7 @@ namespace Assets.Ably.Tests.EditMode
         }
 
         [Test]
-        public async Task Auth_WithRealtimeClient_WhenAuthFails_ShouldTransitionToOrRemainInTheCorrectState(Protocol protocol = Protocol.Json)
+        public async Task UnityTest_Auth_WithRealtimeClient_WhenAuthFails_ShouldTransitionToOrRemainInTheCorrectState(Protocol protocol = Protocol.Json)
         {
             async Task TestConnectingBecomesDisconnected(string context, Action<ClientOptions, TestEnvironmentSettings> optionsAction)
             {
@@ -428,8 +459,8 @@ namespace Assets.Ably.Tests.EditMode
         }
 
         [Test]
-        [Property("spec", "RSA4d")]
-        public async Task Auth_WithRealtimeClient_WhenAuthFailsWith403_ShouldTransitionToFailed(Protocol protocol)
+        [NUnit.Framework.Property("spec", "RSA4d")]
+        public async Task UnityTest_Auth_WithRealtimeClient_WhenAuthFailsWith403_ShouldTransitionToFailed(Protocol protocol)
         {
             async Task Test403BecomesFailed(string context, int expectedCode, Action<ClientOptions, TestEnvironmentSettings> optionsAction)
             {
@@ -473,9 +504,9 @@ namespace Assets.Ably.Tests.EditMode
 
         [Test]
         
-        [Property("spec", "RSA4d")]
-        [Property("spec", "RSA4d1")]
-        public async Task Auth_WithRealtimeClient_WhenExplicitAuthFailsWith403_ShouldTransitionToFailed(Protocol protocol)
+        [NUnit.Framework.Property("spec", "RSA4d")]
+        [NUnit.Framework.Property("spec", "RSA4d1")]
+        public async Task UnityTest_Auth_WithRealtimeClient_WhenExplicitAuthFailsWith403_ShouldTransitionToFailed(Protocol protocol)
         {
             var realtimeClient = await UnitySandbox.GetRealtimeClient(protocol);
             await realtimeClient.WaitForState(ConnectionState.Connected);
@@ -505,8 +536,8 @@ namespace Assets.Ably.Tests.EditMode
 
         [Test]
         
-        [Property("spec", "RSA4d1")]
-        public async Task Auth_WithConnectedRealtimeClient_WhenExplicitRequestTokenFailsWith403_ShouldNotAffectConnectionState(Protocol protocol)
+        [NUnit.Framework.Property("spec", "RSA4d1")]
+        public async Task UnityTest_Auth_WithConnectedRealtimeClient_WhenExplicitRequestTokenFailsWith403_ShouldNotAffectConnectionState(Protocol protocol)
         {
             var realtimeClient = await UnitySandbox.GetRealtimeClient(protocol);
             realtimeClient.Connection.Connect();
@@ -530,8 +561,8 @@ namespace Assets.Ably.Tests.EditMode
 
         [Test]
         
-        [Property("spec", "RSA8a")]
-        public async Task ShouldReturnTheRequestedToken(Protocol protocol)
+        [NUnit.Framework.Property("spec", "RSA8a")]
+        public async Task UnityTest_ShouldReturnTheRequestedToken(Protocol protocol)
         {
             var ttl = TimeSpan.FromSeconds(30 * 60);
             var capability = new Capability();
@@ -551,8 +582,8 @@ namespace Assets.Ably.Tests.EditMode
 
         [Test]
         
-        [Property("spec", "RSA3a")]
-        public async Task WithTokenId_AuthenticatesSuccessfullyOverHttpAndHttps(Protocol protocol)
+        [NUnit.Framework.Property("spec", "RSA3a")]
+        public async Task UnityTest_WithTokenId_AuthenticatesSuccessfullyOverHttpAndHttps(Protocol protocol)
         {
             var capability = new Capability();
             capability.AddResource("foo").AllowPublish();
@@ -573,8 +604,8 @@ namespace Assets.Ably.Tests.EditMode
 
         [Test]
         
-        [Property("spec", "RSA4a2")]
-        public async Task WithTokenAuth_WhenUnauthorizedErrorAndNoRenew_ShouldThrow40171AblyException(Protocol protocol)
+        [NUnit.Framework.Property("spec", "RSA4a2")]
+        public async Task UnityTest_WithTokenAuth_WhenUnauthorizedErrorAndNoRenew_ShouldThrow40171AblyException(Protocol protocol)
         {
             var ablyRest = await UnitySandbox.GetRestClient(protocol);
             var token = ablyRest.Auth.RequestToken(new TokenParams { Ttl = TimeSpan.FromSeconds(1) });
@@ -592,7 +623,7 @@ namespace Assets.Ably.Tests.EditMode
 
         [Test]
         
-        public async Task WithTokenId_WhenTryingToPublishToUnspecifiedChannel_ThrowsAblyException(Protocol protocol)
+        public async Task UnityTest_WithTokenId_WhenTryingToPublishToUnspecifiedChannel_ThrowsAblyException(Protocol protocol)
         {
             var capability = new Capability();
             capability.AddResource("foo").AllowPublish();
@@ -611,7 +642,7 @@ namespace Assets.Ably.Tests.EditMode
 
         [Test]
         
-        public async Task WithInvalidTimeStamp_Throws(Protocol protocol)
+        public async Task UnityTest_WithInvalidTimeStamp_Throws(Protocol protocol)
         {
             var ably = await UnitySandbox.GetRestClient(protocol);
 
@@ -625,9 +656,9 @@ namespace Assets.Ably.Tests.EditMode
 
         [Test]
         
-        [Property("spec", "RSA7b2")]
-        [Property("spec", "RSA10a")]
-        public async Task WithoutClientId_WhenAuthorizedWithTokenParamsWithClientId_SetsClientId(Protocol protocol)
+        [NUnit.Framework.Property("spec", "RSA7b2")]
+        [NUnit.Framework.Property("spec", "RSA10a")]
+        public async Task UnityTest_WithoutClientId_WhenAuthorizedWithTokenParamsWithClientId_SetsClientId(Protocol protocol)
         {
             var ably = await UnitySandbox.GetRestClient(protocol);
             var tokenDetails1 = await ably.Auth.AuthorizeAsync(new TokenParams { ClientId = "123" });
@@ -644,8 +675,8 @@ namespace Assets.Ably.Tests.EditMode
 
         [Test]
         
-        [Property("spec", "RSA8f1")]
-        public async Task TokenAuthWithoutClientId_ShouldNotSetClientIdOnMessagesAndTheClient(Protocol protocol)
+        [NUnit.Framework.Property("spec", "RSA8f1")]
+        public async Task UnityTest_TokenAuthWithoutClientId_ShouldNotSetClientIdOnMessagesAndTheClient(Protocol protocol)
         {
             var client = await UnitySandbox.GetRestClient(protocol, opts => opts.QueryTime = true);
             var settings = await _sandboxFixture.GetSettings();
@@ -667,8 +698,8 @@ namespace Assets.Ably.Tests.EditMode
 
         [Test]
         
-        [Property("spec", "RSA8f2")]
-        public async Task TokenAuthWithoutClientIdAndAMessageWithExplicitId_ShouldThrow(Protocol protocol)
+        [NUnit.Framework.Property("spec", "RSA8f2")]
+        public async Task UnityTest_TokenAuthWithoutClientIdAndAMessageWithExplicitId_ShouldThrow(Protocol protocol)
         {
             var client = await UnitySandbox.GetRestClient(protocol);
             var settings = await _sandboxFixture.GetSettings();
@@ -684,8 +715,8 @@ namespace Assets.Ably.Tests.EditMode
 
         [Test]
         
-        [Property("spec", "RSA8f3")]
-        public async Task TokenAuthWithWildcardClientId_ShouldPublishMessageSuccessfullyAndClientIdShouldBeSetToWildcard(
+        [NUnit.Framework.Property("spec", "RSA8f3")]
+        public async Task UnityTest_TokenAuthWithWildcardClientId_ShouldPublishMessageSuccessfullyAndClientIdShouldBeSetToWildcard(
             Protocol protocol)
         {
             var client = await UnitySandbox.GetRestClient(protocol);
@@ -708,7 +739,7 @@ namespace Assets.Ably.Tests.EditMode
 
         [Test]
         
-        [Property("spec", "RSA8f4")]
+        [NUnit.Framework.Property("spec", "RSA8f4")]
         public async Task
             TokenAuthWithWildcardClientId_WhenPublishingMessageWithClientId_ShouldExpectClientIdToBeSentWithTheMessage(
                 Protocol protocol)
@@ -733,7 +764,7 @@ namespace Assets.Ably.Tests.EditMode
 
         [Test]
         
-        public async Task TokenAuthUrlWhenPlainTextTokenIsReturn_ShouldBeAblyToPublishWithNewToken(Protocol protocol)
+        public async Task UnityTest_TokenAuthUrlWhenPlainTextTokenIsReturn_ShouldBeAblyToPublishWithNewToken(Protocol protocol)
         {
             var client = await UnitySandbox.GetRestClient(protocol);
             var token = await client.Auth.RequestTokenAsync(new TokenParams { ClientId = "*" });
@@ -757,7 +788,7 @@ namespace Assets.Ably.Tests.EditMode
 
         [Test]
         
-        public async Task TokenAuthUrlWithJsonTokenReturned_ShouldBeAbleToPublishWithNewToken(Protocol protocol)
+        public async Task UnityTest_TokenAuthUrlWithJsonTokenReturned_ShouldBeAbleToPublishWithNewToken(Protocol protocol)
         {
             var client = await UnitySandbox.GetRestClient(protocol);
             var token = await client.Auth.RequestTokenAsync(new TokenParams { ClientId = "*" });
@@ -782,7 +813,7 @@ namespace Assets.Ably.Tests.EditMode
 
         [Test]
         
-        public async Task TokenAuthUrlWithJsonTokenReturned_ShouldBeAbleToConnect(Protocol protocol)
+        public async Task UnityTest_TokenAuthUrlWithJsonTokenReturned_ShouldBeAbleToConnect(Protocol protocol)
         {
             var ablyRest = await UnitySandbox.GetRestClient(protocol);
             var token = await ablyRest.Auth.RequestTokenAsync(new TokenParams { ClientId = "*" });
@@ -804,7 +835,7 @@ namespace Assets.Ably.Tests.EditMode
 
         [Test]
         
-        public async Task TokenAuthUrlWithIncorrectJsonTokenReturned_ShouldNotBeAbleToConnectAndShouldHaveError(Protocol protocol)
+        public async Task UnityTest_TokenAuthUrlWithIncorrectJsonTokenReturned_ShouldNotBeAbleToConnectAndShouldHaveError(Protocol protocol)
         {
             var ablyRest = await UnitySandbox.GetRestClient(protocol);
             var token = await ablyRest.Auth.RequestTokenAsync(new TokenParams { ClientId = "*" });
@@ -837,7 +868,7 @@ namespace Assets.Ably.Tests.EditMode
 
         [Test]
         
-        public async Task TokenAuthCallbackWithTokenDetailsReturned_ShouldBeAbleToPublishWithNewToken(Protocol protocol)
+        public async Task UnityTest_TokenAuthCallbackWithTokenDetailsReturned_ShouldBeAbleToPublishWithNewToken(Protocol protocol)
         {
             var settings = await _sandboxFixture.GetSettings();
             var tokenClient = await UnitySandbox.GetRestClient(protocol);
@@ -860,7 +891,7 @@ namespace Assets.Ably.Tests.EditMode
 
         [Test]
         
-        public async Task TokenAuthCallbackWithTokenRequestReturned_ShouldBeAbleToGetATokenAndPublishWithNewToken(Protocol protocol)
+        public async Task UnityTest_TokenAuthCallbackWithTokenRequestReturned_ShouldBeAbleToGetATokenAndPublishWithNewToken(Protocol protocol)
         {
             var settings = await _sandboxFixture.GetSettings();
             var tokenClient = await UnitySandbox.GetRestClient(protocol);
@@ -881,8 +912,8 @@ namespace Assets.Ably.Tests.EditMode
 
         [Test]
         
-        [Property("issue", "374")]
-        public async Task WhenClientTimeIsWrongAndQueryTimeSetToTrue_ShouldNotTreatTokenAsInvalid(Protocol protocol)
+        [NUnit.Framework.Property("issue", "374")]
+        public async Task UnityTest_WhenClientTimeIsWrongAndQueryTimeSetToTrue_ShouldNotTreatTokenAsInvalid(Protocol protocol)
         {
             // Our device's clock is fast. The server returns by default a token valid for an hour
             DateTimeOffset NowFunc() => DateTimeOffset.UtcNow.AddHours(2);
@@ -971,7 +1002,7 @@ namespace Assets.Ably.Tests.EditMode
         }
 
         [Test]
-        public async Task RealtimeClient_ConnectedWithExpiringToken_WhenTokenExpired_ShouldNotRetryAndHaveError()
+        public async Task UnityTest_RealtimeClient_ConnectedWithExpiringToken_WhenTokenExpired_ShouldNotRetryAndHaveError()
         {
             var protocol = Protocol.Json;
             var helper = new RSA4Helper(this);
@@ -996,7 +1027,7 @@ namespace Assets.Ably.Tests.EditMode
         }
 
         [Test]
-        public async Task TokenAuthWithWildcardClientId_ShouldPublishMessageSuccessfullyAndClientIdShouldBeSetToWildcard()
+        public async Task UnityTest_TokenAuthWithWildcardClientId_ShouldPublishMessageSuccessfullyAndClientIdShouldBeSetToWildcard()
         {
             var protocol = Protocol.Json;
             var client = await UnitySandbox.GetRestClient(protocol);
