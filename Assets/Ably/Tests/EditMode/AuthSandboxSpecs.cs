@@ -17,18 +17,18 @@ namespace Assets.Ably.Tests.EditMode
     [TestFixture]
     public class AuthSandboxSpecs
     {
-        private AblySandboxFixture _sandboxFixture;
+        private AblySandboxFixture sandboxFixture;
 
         [OneTimeSetUp]
         public void OneTimeInit()
         {
-            _sandboxFixture = new AblySandboxFixture();
+            sandboxFixture = new AblySandboxFixture();
         }
 
         [UnitySetUp]
         public IEnumerator Init()
         {
-            UnitySandbox = new UnitySandboxSpecs(_sandboxFixture);
+            UnitySandbox = new UnitySandboxSpecs(sandboxFixture);
             yield return null;
         }
 
@@ -692,7 +692,7 @@ namespace Assets.Ably.Tests.EditMode
             var ably = await UnitySandbox.GetRestClient(protocol);
             var token = await ably.Auth.RequestTokenAsync(CreateTokenParams(capability), null);
 
-            var options = await _sandboxFixture.GetSettings();
+            var options = await sandboxFixture.GetSettings();
             var httpTokenAbly =
                 new AblyRest(new ClientOptions { Token = token.Token, Environment = options.Environment, Tls = false });
             var httpsTokenAbly =
@@ -820,7 +820,7 @@ namespace Assets.Ably.Tests.EditMode
         public async Task UnityTest_TokenAuthWithoutClientId_ShouldNotSetClientIdOnMessagesAndTheClient(Protocol protocol = Protocol.Json)
         {
             var client = await UnitySandbox.GetRestClient(protocol, opts => opts.QueryTime = true);
-            var settings = await _sandboxFixture.GetSettings();
+            var settings = await sandboxFixture.GetSettings();
             var token = await client.Auth.RequestTokenAsync();
             var tokenClient = new AblyRest(new ClientOptions
             {
@@ -851,7 +851,7 @@ namespace Assets.Ably.Tests.EditMode
         public async Task UnityTest_TokenAuthWithoutClientIdAndAMessageWithExplicitId_ShouldThrow(Protocol protocol = Protocol.Json)
         {
             var client = await UnitySandbox.GetRestClient(protocol);
-            var settings = await _sandboxFixture.GetSettings();
+            var settings = await sandboxFixture.GetSettings();
             var token = await client.Auth.RequestTokenAsync();
             var tokenClient = new AblyRest(new ClientOptions
             {
@@ -877,7 +877,7 @@ namespace Assets.Ably.Tests.EditMode
             Protocol protocol = Protocol.Json)
         {
             var client = await UnitySandbox.GetRestClient(protocol);
-            var settings = await _sandboxFixture.GetSettings();
+            var settings = await sandboxFixture.GetSettings();
             var token = await client.Auth.RequestTokenAsync(new TokenParams { ClientId = "*" });
             var tokenClient = new AblyRest(new ClientOptions
             {
@@ -910,7 +910,7 @@ namespace Assets.Ably.Tests.EditMode
                 Protocol protocol = Protocol.Json)
         {
             var client = await UnitySandbox.GetRestClient(protocol);
-            var settings = await _sandboxFixture.GetSettings();
+            var settings = await sandboxFixture.GetSettings();
             var token = await client.Auth.RequestTokenAsync(new TokenParams { ClientId = "*" });
             var tokenClient = new AblyRest(new ClientOptions
             {
@@ -940,7 +940,7 @@ namespace Assets.Ably.Tests.EditMode
         {
             var client = await UnitySandbox.GetRestClient(protocol);
             var token = await client.Auth.RequestTokenAsync(new TokenParams { ClientId = "*" });
-            var settings = await _sandboxFixture.GetSettings();
+            var settings = await sandboxFixture.GetSettings();
             var authUrl = "http://echo.ably.io/?type=text&body=" + token.Token;
 
             var authUrlClient = new AblyRest(new ClientOptions
@@ -972,7 +972,7 @@ namespace Assets.Ably.Tests.EditMode
         {
             var client = await UnitySandbox.GetRestClient(protocol);
             var token = await client.Auth.RequestTokenAsync(new TokenParams { ClientId = "*" });
-            var settings = await _sandboxFixture.GetSettings();
+            var settings = await sandboxFixture.GetSettings();
             var authUrl = "http://echo.ably.io/?type=json&body=" + Uri.EscapeUriString(token.ToJson());
 
             var authUrlClient = new AblyRest(new ClientOptions
@@ -1005,7 +1005,7 @@ namespace Assets.Ably.Tests.EditMode
         {
             var ablyRest = await UnitySandbox.GetRestClient(protocol);
             var token = await ablyRest.Auth.RequestTokenAsync(new TokenParams { ClientId = "*" });
-            var settings = await _sandboxFixture.GetSettings();
+            var settings = await sandboxFixture.GetSettings();
             var tokenJson = token.ToJson();
             var authUrl = "http://echo.ably.io/?type=json&body=" + Uri.EscapeUriString(tokenJson);
 
@@ -1034,7 +1034,7 @@ namespace Assets.Ably.Tests.EditMode
         {
             var ablyRest = await UnitySandbox.GetRestClient(protocol);
             var token = await ablyRest.Auth.RequestTokenAsync(new TokenParams { ClientId = "*" });
-            var settings = await _sandboxFixture.GetSettings();
+            var settings = await sandboxFixture.GetSettings();
             var incorrectJson = $"[{token.ToJson()}]";
             var authUrl = "http://echo.ably.io/?type=json&body=" + Uri.EscapeUriString(incorrectJson);
 
@@ -1073,7 +1073,7 @@ namespace Assets.Ably.Tests.EditMode
 
         public async Task UnityTest_TokenAuthCallbackWithTokenDetailsReturned_ShouldBeAbleToPublishWithNewToken(Protocol protocol = Protocol.Json)
         {
-            var settings = await _sandboxFixture.GetSettings();
+            var settings = await sandboxFixture.GetSettings();
             var tokenClient = await UnitySandbox.GetRestClient(protocol);
             var authCallbackClient = await UnitySandbox.GetRestClient(protocol, options =>
             {
@@ -1104,7 +1104,7 @@ namespace Assets.Ably.Tests.EditMode
 
         public async Task UnityTest_TokenAuthCallbackWithTokenRequestReturned_ShouldBeAbleToGetATokenAndPublishWithNewToken(Protocol protocol = Protocol.Json)
         {
-            var settings = await _sandboxFixture.GetSettings();
+            var settings = await sandboxFixture.GetSettings();
             var tokenClient = await UnitySandbox.GetRestClient(protocol);
             var authCallbackClient = await UnitySandbox.GetRestClient(protocol, options =>
             {
