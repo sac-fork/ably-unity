@@ -45,7 +45,8 @@
     "com.unity.modules.vr": "1.0.0",
     "com.unity.modules.wind": "1.0.0",
     "com.unity.modules.xr": "1.0.0",
-    "com.boundfoxstudios.fluentassertions": "5.10.3-r5"
+    "com.boundfoxstudios.fluentassertions": "5.10.3-r5",
+    "com.cysharp.unitask": "2.2.5"
   },
   "scopedRegistries": [
     {
@@ -53,6 +54,7 @@
       "url": "https://package.openupm.com",
       "scopes": [
         "com.boundfoxstudios.fluentassertions",
+        "com.cysharp.unitask",
         "com.openupm"
       ]
     }

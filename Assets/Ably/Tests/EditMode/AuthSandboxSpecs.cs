@@ -5,6 +5,7 @@ using System.Linq;
 using System.Net;
 using System.Text;
 using System.Threading.Tasks;
+using Cysharp.Threading.Tasks;
 using FluentAssertions;
 using IO.Ably;
 using IO.Ably.Realtime;
@@ -76,19 +77,13 @@ namespace Assets.Ably.Tests.EditMode
             return Await(taskDelegate.Invoke());
         }
 
+        static Protocol [] Protocols = {Protocol.Json};
+            
         [UnityTest]
-        public IEnumerator RSA4Helper_RestClient_ShouldTrackRequests()
-        {
-            yield return Await(async () =>
-            {
-                await UnityTest_RSA4Helper_RestClient_ShouldTrackRequests();
-            });
-        }
-
-        public async Task UnityTest_RSA4Helper_RestClient_ShouldTrackRequests(Protocol protocol = Protocol.Json)
+        public IEnumerator RSA4Helper_RestClient_ShouldTrackRequests([ValueSource("Protocols")] Protocol protocol) => UniTask.ToCoroutine(async () =>
         {
             var authClient = await UnitySandbox.GetRestClient(protocol);
-            var token = await authClient.AblyAuth.RequestTokenAsync(new TokenParams { ClientId = "123" });
+            var token = await authClient.AblyAuth.RequestTokenAsync(new TokenParams {ClientId = "123"});
             var helper = new RSA4Helper(this);
             var restClient = await helper.GetRestClientWithRequests(protocol, token, invalidateKey: true);
             helper.Requests.Count.Should().Be(0);
@@ -98,7 +93,7 @@ namespace Assets.Ably.Tests.EditMode
             helper.Requests.Count.Should().Be(1);
             await realtimeClient.RestClient.TimeAsync();
             helper.Requests.Count.Should().Be(2);
-        }
+        });
 
         [UnityTest]
         public IEnumerator RestClient_WhenTokenExpired_ShouldNotRetryAndRaiseError()
