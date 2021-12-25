@@ -77,10 +77,10 @@ namespace Assets.Ably.Tests.EditMode
             return Await(taskDelegate.Invoke());
         }
 
-        static Protocol [] Protocols = {Protocol.Json};
+        static Protocol [] protocols = {Protocol.Json};
             
         [UnityTest]
-        public IEnumerator RSA4Helper_RestClient_ShouldTrackRequests([ValueSource("Protocols")] Protocol protocol) => UniTask.ToCoroutine(async () =>
+        public IEnumerator RSA4Helper_RestClient_ShouldTrackRequests([ValueSource(nameof(protocols))] Protocol protocol) => UniTask.ToCoroutine(async () =>
         {
             var authClient = await UnitySandbox.GetRestClient(protocol);
             var token = await authClient.AblyAuth.RequestTokenAsync(new TokenParams {ClientId = "123"});
