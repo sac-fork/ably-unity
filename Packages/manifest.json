@@ -1,6 +1,5 @@
 {
   "dependencies": {
-    "com.boundfoxstudios.fluentassertions": "file:C:/Users/sachi/Downloads/fluentassertions-unity-5.10.3-r5/fluentassertions-unity-5.10.3-r5",
     "com.unity.2d.animation": "5.0.7",
     "com.unity.2d.pixel-perfect": "4.0.1",
     "com.unity.2d.psdimporter": "4.1.0",
@@ -45,6 +44,17 @@
     "com.unity.modules.video": "1.0.0",
     "com.unity.modules.vr": "1.0.0",
     "com.unity.modules.wind": "1.0.0",
-    "com.unity.modules.xr": "1.0.0"
-  }
+    "com.unity.modules.xr": "1.0.0",
+    "com.boundfoxstudios.fluentassertions": "5.10.3-r5"
+  },
+  "scopedRegistries": [
+    {
+      "name": "package.openupm.com",
+      "url": "https://package.openupm.com",
+      "scopes": [
+        "com.boundfoxstudios.fluentassertions",
+        "com.openupm"
+      ]
+    }
+  ]
 }
