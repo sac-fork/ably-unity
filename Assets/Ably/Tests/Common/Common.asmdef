@@ -1,12 +1,7 @@
 {
-    "name": "Assets.Ably.Tests.EditMode",
+    "name": "Assets.Ably.Tests.Common",
     "rootNamespace": "",
     "references": [
-        "UnityEngine.TestRunner",
-        "UnityEditor.TestRunner",
-        "BoundfoxStudios.FluentAssertions",
-        "UniTask",
-        "Assets.Ably.Tests.Common"
     ],
     "includePlatforms": [
         "Editor"

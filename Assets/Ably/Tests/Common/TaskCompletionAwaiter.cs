@@ -3,7 +3,7 @@ using System.Runtime.CompilerServices;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace Assets.Ably.Tests.EditMode
+namespace Assets.Ably.Tests.Common
 {
     public sealed class TaskCompletionAwaiter : IDisposable
     {

@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using IO.Ably;
 
-namespace Assets.Ably.Tests.EditMode
+namespace Assets.Ably.Tests.Common
 {
     public class Key
     {
@@ -47,7 +47,7 @@ namespace Assets.Ably.Tests.EditMode
             var ablyEnv = System.Environment.GetEnvironmentVariable("ABLY_ENV");
             var env = !string.IsNullOrEmpty(ablyEnv) ? ablyEnv.Trim() : environment;
 
-            return new ClientOptions { Key = key ?? FirstValidKey, Tls = Tls, Environment = env };
+            return new ClientOptions { Key = key ?? FirstValidKey, Tls = Tls, Environment = env, AutomaticNetworkStateMonitoring = false};
         }
 
         internal AblyHttpClient GetHttpClient(string environment = null)

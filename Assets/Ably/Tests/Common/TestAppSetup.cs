@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Assets.Ably.Tests.EditMode
+﻿namespace Assets.Ably.Tests.Common
 {
     public class TestAppSetup
     {

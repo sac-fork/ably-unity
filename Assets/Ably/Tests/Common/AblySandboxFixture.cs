@@ -1,13 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Net.Http;
-using System.Text;
 using System.Threading.Tasks;
 using IO.Ably;
 using IO.Ably.Encryption;
 using Newtonsoft.Json.Linq;
 
-namespace Assets.Ably.Tests.EditMode
+namespace Assets.Ably.Tests.Common
 {
     public class AblySandboxFixture
     {

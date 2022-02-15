@@ -2,12 +2,11 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using IO.Ably;
 using IO.Ably.Realtime;
 
-namespace Assets.Ably.Tests.EditMode
+namespace Assets.Ably.Tests.Common
 {
     internal class ConnectionAwaiter
     {

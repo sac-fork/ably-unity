@@ -1,13 +1,10 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.IO;
 using System.Reflection;
-using System.Text;
 using System.Threading.Tasks;
 using IO.Ably;
-using NUnit.Framework;
 
-namespace Assets.Ably.Tests.EditMode
+namespace Assets.Ably.Tests.Common
 {
     public static class ResourceHelper
     {

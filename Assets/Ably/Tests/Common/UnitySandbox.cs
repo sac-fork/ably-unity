@@ -1,21 +1,19 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Net.Mail;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using IO.Ably;
 using IO.Ably.Push;
 using IO.Ably.Realtime;
 
-namespace Assets.Ably.Tests.EditMode
+namespace Assets.Ably.Tests.Common
 {
     public class UnitySandboxSpecs: IDisposable
     {
         private readonly List<AblyRealtime> _realtimeClients = new List<AblyRealtime>();
 
-        protected internal UnitySandboxSpecs(AblySandboxFixture fixture)
+        public UnitySandboxSpecs(AblySandboxFixture fixture)
         {
             ResetEvent = new ManualResetEvent(false);
             Fixture = fixture;
@@ -28,12 +26,11 @@ namespace Assets.Ably.Tests.EditMode
             // Logger.LoggerSink = new OutputLoggerSink(output);
             // Logger.LogLevel = LogLevel.Debug;
         }
+        ILogger Logger { get; set; }
 
-        internal IO.Ably.ILogger Logger { get; set; }
+        public AblySandboxFixture Fixture { get; set; }
 
-        protected AblySandboxFixture Fixture { get; set; }
-
-        protected ManualResetEvent ResetEvent { get; }
+        public ManualResetEvent ResetEvent { get; }
 
         public IDisposable EnableDebugLogging()
         {
@@ -42,7 +39,7 @@ namespace Assets.Ably.Tests.EditMode
 
             return new ActionOnDispose(() =>
             {
-                Logger.LoggerSink = new DefaultLoggerSink();
+                Logger.LoggerSink = new DefaultLoggerSink(); 
                 Logger.LogLevel = LogLevel.Warning;
             });
         }
@@ -65,7 +62,7 @@ namespace Assets.Ably.Tests.EditMode
             ResetEvent?.Dispose();
         }
 
-        protected internal async Task<AblyRest> GetRestClient(Protocol protocol, Action<ClientOptions> optionsAction = null, string environment = null)
+        public async Task<AblyRest> GetRestClient(Protocol protocol, Action<ClientOptions> optionsAction = null, string environment = null)
         {
             var settings = await Fixture.GetSettings(environment);
             var defaultOptions = settings.CreateDefaultOptions();
@@ -74,14 +71,14 @@ namespace Assets.Ably.Tests.EditMode
             return new AblyRest(defaultOptions);
         }
 
-        protected internal async Task<AblyRealtime> GetRealtimeClient(
+        public async Task<AblyRealtime> GetRealtimeClient(
             Protocol protocol,
             Action<ClientOptions, TestEnvironmentSettings> optionsAction = null)
         {
             return await GetRealtimeClient(protocol, optionsAction, null);
         }
 
-        protected internal async Task<AblyRealtime> GetRealtimeClient(
+        public async Task<AblyRealtime> GetRealtimeClient(
             Protocol protocol,
             Action<ClientOptions, TestEnvironmentSettings> optionsAction,
             Func<ClientOptions, IMobileDevice, AblyRest> createRestFunc)
@@ -98,12 +95,12 @@ namespace Assets.Ably.Tests.EditMode
             return client;
         }
 
-        protected async Task WaitFor(Action<Action> done)
+        public async Task WaitFor(Action<Action> done)
         {
             await TestHelpers.WaitFor(10000, 1, done);
         }
 
-        protected async Task AssertMultipleTimes(
+        public async Task AssertMultipleTimes(
             Func<Task> testAction,
             int maxNumberOfTimes,
             TimeSpan durationBetweenAttempts)
@@ -122,22 +119,22 @@ namespace Assets.Ably.Tests.EditMode
             }
         }
 
-        protected async Task WaitFor(int timeoutMs, Action<Action> done, Action onFail = null)
+        public async Task WaitFor(int timeoutMs, Action<Action> done, Action onFail = null)
         {
             await TestHelpers.WaitFor(timeoutMs, 1, done, onFail);
         }
 
-        protected async Task WaitForMultiple(int taskCount, Action<Action> done, Action onFail = null)
+        public async Task WaitForMultiple(int taskCount, Action<Action> done, Action onFail = null)
         {
             await TestHelpers.WaitFor(20000, taskCount, done, onFail);
         }
 
-        protected Task WaitToBecomeConnected(AblyRealtime realtime, TimeSpan? waitSpan = null)
+        public Task WaitToBecomeConnected(AblyRealtime realtime, TimeSpan? waitSpan = null)
         {
             return WaitForState(realtime, waitSpan: waitSpan);
         }
 
-        protected Task WaitForState(AblyRealtime realtime, ConnectionState awaitedState = ConnectionState.Connected, TimeSpan? waitSpan = null)
+        public Task WaitForState(AblyRealtime realtime, ConnectionState awaitedState = ConnectionState.Connected, TimeSpan? waitSpan = null)
         {
             var connectionAwaiter = new ConnectionAwaiter(realtime.Connection, awaitedState);
             if (waitSpan.HasValue)

@@ -1,13 +1,11 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
 using System.Threading.Tasks;
 using IO.Ably;
 using IO.Ably.Realtime;
 using IO.Ably.Realtime.Workflow;
 using IO.Ably.Types;
 
-namespace Assets.Ably.Tests.EditMode
+namespace Assets.Ably.Tests.Common
 {
     public static class SandboxSpecExtension
     {
@@ -21,7 +19,7 @@ namespace Assets.Ably.Tests.EditMode
             return str + "_" + Guid.NewGuid().ToString("D").Substring(0, 8);
         }
 
-        internal static Task<TimeSpan> WaitForState(this AblyRealtime realtime, ConnectionState awaitedState, TimeSpan? waitSpan = null)
+        public static Task<TimeSpan> WaitForState(this AblyRealtime realtime, ConnectionState awaitedState, TimeSpan? waitSpan = null)
         {
             if (realtime.Connection.State == awaitedState)
             {
@@ -37,7 +35,7 @@ namespace Assets.Ably.Tests.EditMode
             return connectionAwaiter.Wait();
         }
 
-        internal static async Task WaitForState(this IRealtimeChannel channel, ChannelState awaitedState = ChannelState.Attached, TimeSpan? waitSpan = null)
+        public static async Task WaitForState(this IRealtimeChannel channel, ChannelState awaitedState = ChannelState.Attached, TimeSpan? waitSpan = null)
         {
             var channelAwaiter = new ChannelAwaiter(channel, awaitedState);
             var timespan = waitSpan.GetValueOrDefault(TimeSpan.FromSeconds(5));
@@ -48,7 +46,7 @@ namespace Assets.Ably.Tests.EditMode
             }
         }
 
-        internal static Task WaitForState(this IRealtimeClient realtime, ConnectionState awaitedState = ConnectionState.Connected, TimeSpan? waitSpan = null)
+        public static Task WaitForState(this IRealtimeClient realtime, ConnectionState awaitedState = ConnectionState.Connected, TimeSpan? waitSpan = null)
         {
             var connectionAwaiter = new ConnectionAwaiter(realtime.Connection, awaitedState);
             if (waitSpan.HasValue)
@@ -59,12 +57,7 @@ namespace Assets.Ably.Tests.EditMode
             return connectionAwaiter.Wait();
         }
 
-        internal static void ExecuteCommand(this IRealtimeClient client, RealtimeCommand command)
-        {
-            ((AblyRealtime)client).Workflow.QueueCommand(command);
-        }
-
-        internal static async Task ProcessMessage(this IRealtimeClient client, ProtocolMessage message)
+        public static async Task ProcessMessage(this IRealtimeClient client, ProtocolMessage message)
         {
             ((AblyRealtime)client).Workflow.QueueCommand(ProcessMessageCommand.Create(message));
             await client.ProcessCommands();
@@ -98,7 +91,7 @@ namespace Assets.Ably.Tests.EditMode
         }
 
 
-        internal static async Task<bool> WaitSync(this Presence presence, TimeSpan? waitSpan = null)
+        public static async Task<bool> WaitSync(this Presence presence, TimeSpan? waitSpan = null)
         {
             TaskCompletionSource<bool> taskCompletionSource = new TaskCompletionSource<bool>();
             var inProgress = presence.IsSyncInProgress;

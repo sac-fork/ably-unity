@@ -5,6 +5,7 @@ using System.Linq;
 using System.Net;
 using System.Text;
 using System.Threading.Tasks;
+using Assets.Ably.Tests.Common;
 using Cysharp.Threading.Tasks;
 using FluentAssertions;
 using IO.Ably;
@@ -1009,7 +1010,8 @@ namespace Assets.Ably.Tests.EditMode
                 AuthUrl = new Uri(authUrl),
                 Environment = settings.Environment,
                 UseBinaryProtocol = protocol == Defaults.Protocol,
-                HttpRequestTimeout = new TimeSpan(0, 0, 20)
+                HttpRequestTimeout = new TimeSpan(0, 0, 20),
+                AutomaticNetworkStateMonitoring = false
             });
 
             await client.WaitForState();
@@ -1038,7 +1040,8 @@ namespace Assets.Ably.Tests.EditMode
                 AuthUrl = new Uri(authUrl),
                 Environment = settings.Environment,
                 UseBinaryProtocol = protocol == Defaults.Protocol,
-                HttpRequestTimeout = new TimeSpan(0, 0, 20)
+                HttpRequestTimeout = new TimeSpan(0, 0, 20),
+                AutomaticNetworkStateMonitoring = false
             });
 
             var tsc = new TaskCompletionAwaiter();
