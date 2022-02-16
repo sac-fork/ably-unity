@@ -6,6 +6,7 @@ using IO.Ably;
 using IO.Ably.Realtime;
 using NUnit.Framework;
 using UnityEngine;
+using UnityEngine.Assertions;
 using UnityEngine.TestTools;
 
 public class AblyTests
@@ -15,7 +16,7 @@ public class AblyTests
     public void SampleTestsSimplePasses()
     {
         // Use the Assert class to test conditions
-        Assert.True(true);
+        // Assert.IS(true);
         var options = new ClientOptions();
         options.Key = "jy3uew.oZJBOA:L7FBaCQTrr9kgmmP";
         // this will disable the library trying to subscribe to network state notifications

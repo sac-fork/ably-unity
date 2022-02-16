@@ -1,11 +1,8 @@
 {
     "name": "Assets.Ably.Tests.Common",
     "rootNamespace": "",
-    "references": [
-    ],
-    "includePlatforms": [
-        "Editor"
-    ],
+    "references": [],
+    "includePlatforms": [],
     "excludePlatforms": [],
     "allowUnsafeCode": false,
     "overrideReferences": false,
