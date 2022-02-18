@@ -17,6 +17,7 @@ using UnityEngine.TestTools;
 namespace Assets.Ably.Tests.PlayMode
 {
     [TestFixture]
+    [Category("EditorPlayer")]
     public class AuthSandboxSpecs
     {
         private AblySandboxFixture sandboxFixture;

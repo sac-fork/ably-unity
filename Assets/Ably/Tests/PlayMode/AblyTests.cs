@@ -9,6 +9,7 @@ using UnityEngine;
 using UnityEngine.Assertions;
 using UnityEngine.TestTools;
 
+[Category("StandalonePlayer")]
 public class AblyTests
 {
     // A Test behaves as an ordinary method
