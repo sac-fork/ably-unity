@@ -68,11 +68,11 @@ jobs:
         with:
           #Specify the unity project path, relative to the repo root.
           # unityProjectPath: './'
-          # packagePath: 'Assets'
+          packagePath: 'Assets/Package'
           outputPackagePath: './artifacts/ably.unitypackage'
 
       - name: Upload artifact
         uses: actions/upload-artifact@v2
         with:
-          name: Output package
+          name: AblyUnity
           path: ${{ steps.extract_unity_package.outputs.artifactsPath }}
