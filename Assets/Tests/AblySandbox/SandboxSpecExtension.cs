@@ -5,7 +5,7 @@ using IO.Ably.Realtime;
 using IO.Ably.Realtime.Workflow;
 using IO.Ably.Types;
 
-namespace Assets.Ably.Tests.Common
+namespace Assets.Tests.AblySandbox
 {
     public static class SandboxSpecExtension
     {

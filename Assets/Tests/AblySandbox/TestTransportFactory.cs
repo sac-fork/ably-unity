@@ -3,7 +3,7 @@ using IO.Ably;
 using IO.Ably.Transport;
 using IO.Ably.Types;
 
-namespace Assets.Ably.Tests.Common
+namespace Assets.Tests.AblySandbox
 {
     public class TestTransportFactory : ITransportFactory
     {

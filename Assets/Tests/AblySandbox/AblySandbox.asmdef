@@ -1,5 +1,5 @@
 {
-    "name": "Assets.Ably.Tests.Common",
+    "name": "Assets.Tests.AblySandbox",
     "rootNamespace": "",
     "references": [],
     "includePlatforms": [],

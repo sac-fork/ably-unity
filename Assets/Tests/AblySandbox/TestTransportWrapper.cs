@@ -7,7 +7,7 @@ using IO.Ably.Realtime;
 using IO.Ably.Transport;
 using IO.Ably.Types;
 
-namespace Assets.Ably.Tests.Common
+namespace Assets.Tests.AblySandbox
 {
     internal class TestTransportWrapper : ITransport
     {

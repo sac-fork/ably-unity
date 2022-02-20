@@ -4,7 +4,7 @@ using System.Reflection;
 using System.Threading.Tasks;
 using IO.Ably;
 
-namespace Assets.Ably.Tests.Common
+namespace Assets.Tests.AblySandbox
 {
     public static class ResourceHelper
     {

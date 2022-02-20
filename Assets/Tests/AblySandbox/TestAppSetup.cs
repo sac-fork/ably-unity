@@ -1,4 +1,4 @@
-﻿namespace Assets.Ably.Tests.Common
+﻿namespace Assets.Tests.AblySandbox
 {
     public class TestAppSetup
     {

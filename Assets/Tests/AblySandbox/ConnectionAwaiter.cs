@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using IO.Ably;
 using IO.Ably.Realtime;
 
-namespace Assets.Ably.Tests.Common
+namespace Assets.Tests.AblySandbox
 {
     internal class ConnectionAwaiter
     {

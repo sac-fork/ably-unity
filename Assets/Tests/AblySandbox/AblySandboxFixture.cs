@@ -6,7 +6,7 @@ using IO.Ably;
 using IO.Ably.Encryption;
 using Newtonsoft.Json.Linq;
 
-namespace Assets.Ably.Tests.Common
+namespace Assets.Tests.AblySandbox
 {
     public class AblySandboxFixture
     {

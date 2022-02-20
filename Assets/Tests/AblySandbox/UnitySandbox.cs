@@ -7,7 +7,7 @@ using IO.Ably;
 using IO.Ably.Push;
 using IO.Ably.Realtime;
 
-namespace Assets.Ably.Tests.Common
+namespace Assets.Tests.AblySandbox
 {
     public class UnitySandboxSpecs: IDisposable
     {
