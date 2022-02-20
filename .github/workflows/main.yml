@@ -68,7 +68,7 @@ jobs:
         with:
           #Specify the unity project path, relative to the repo root.
           # unityProjectPath: './'
-          packagePath: 'Assets/Package'
+          packagePath: 'Assets/Ably'
           outputPackagePath: './artifacts/ably.unitypackage'
 
       - name: Upload artifact
