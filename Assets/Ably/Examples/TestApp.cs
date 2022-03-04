@@ -12,6 +12,9 @@ namespace Assets.Ably.Examples
         private AblyRealtime _ably;
         private Text _textContent;
         private Button _connectButton;
+        private Text _connectBtnText;
+        private static string _apiKey = "";
+
 
         void Start()
         {
@@ -23,63 +26,40 @@ namespace Assets.Ably.Examples
         void AddComponents()
         {
             _textContent = GameObject.Find("TxtConsole").GetComponent<Text>();
+            _connectBtnText = GameObject.Find("ConnectBtnText").GetComponent<Text>();
             _connectButton = GameObject.Find("ConnectBtn").GetComponent<Button>();
             _connectButton.onClick.AddListener(OnConnectClickHandler);
         }
 
         void InitializeAbly()
         {
+            LogAndDisplay("On connect clicked");
+            var options = new ClientOptions();
+            options.Key = _apiKey;
+            // this will disable the library trying to subscribe to network state notifications
+            options.AutomaticNetworkStateMonitoring = false;
 
+            options.CaptureCurrentSynchronizationContext = true;
+            options.AutoConnect = false;
+            options.CustomContext = SynchronizationContext.Current;
+
+            _ably = new AblyRealtime(options);
         }
-
-        // void Connect()
-        // {
-        //     text = "";
-        //     color = Color.yellow;
-        //
-        //     var options = new ClientOptions();
-        //     options.Key = "";
-        //     // this will disable the library trying to subscribe to network state notifications
-        //     options.AutomaticNetworkStateMonitoring = false;
-        //     // you can also turn on if you need to update the UI directly from channel subscription handlers
-        //     options.CaptureCurrentSynchronizationContext = true;
-        //
-        //     ably = new AblyRealtime(options);
-        //     ably.Connection.On(ConnectionEvent.Connected, args =>
-        //     {
-        //         Debug.Log("Connected to Ably!");
-        //         color = Color.green;
-        //         text = "Connected to Ably!";
-        //     });
-        //
-        //     var channel = ably.Channels.Get("notifications");
-        //     channel.Subscribe(message =>
-        //     {
-        //         Debug.Log("Received a greeting message in realtime: " + message.Data);
-        //         color = Color.blue;
-        //         text = "Received a greeting message in realtime: " + message.Data;
-        //     });
-        //
-        // }
 
 
         void OnConnectClickHandler()
         {
-            LogAndDisplay("On connect clicked");
-            var options = new ClientOptions();
-            options.Key = "";
-            // this will disable the library trying to subscribe to network state notifications
-            options.AutomaticNetworkStateMonitoring = false;
-            // you can also turn on if you need to update the UI directly from channel subscription handlers
-            options.CaptureCurrentSynchronizationContext = true;
-            options.CustomContext = SynchronizationContext.Current;
-
-            _ably = new AblyRealtime(options);
-
-            _ably.Connection.On(ConnectionEvent.Connected, args =>
+            _ably.Connection.On( args =>
             {
-                LogAndDisplay("Connected to ably");
+                LogAndDisplay($"Connection State is {args.Current}");
+                _connectButton.GetComponentInChildren<Text>().text = args.Current.ToString();
+                if (args.Current == ConnectionState.Connected)
+                {
+                    _connectButton.GetComponent<Image>().color = Color.green;
+                }
             });
+
+            _ably.Connect();
         }
 
         void LogAndDisplay(string message)
