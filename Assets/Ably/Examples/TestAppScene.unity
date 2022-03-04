@@ -237,7 +237,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a7cc2f71ec7840843897449abc1c9120, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  TextContent: {fileID: 1587821962}
 --- !u!1 &584728284
 GameObject:
   m_ObjectHideFlags: 0
@@ -393,8 +392,8 @@ GameObject:
   m_Component:
   - component: {fileID: 891051120}
   - component: {fileID: 891051122}
-  - component: {fileID: 891051123}
   - component: {fileID: 891051121}
+  - component: {fileID: 891051123}
   m_Layer: 5
   m_Name: Container
   m_TagString: Untagged
@@ -460,19 +459,23 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 891051119}
   m_CullTransparentMesh: 1
---- !u!114 &891051123
-MonoBehaviour:
+--- !u!1818360610 &891051123
+ScaleConstraint:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 891051119}
   m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a7cc2f71ec7840843897449abc1c9120, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  TextContent: {fileID: 1587821962}
+  m_Weight: 1
+  m_ScaleAtRest: {x: 1, y: 1, z: 1}
+  m_ScaleOffset: {x: 1, y: 1, z: 1}
+  m_AffectScalingX: 1
+  m_AffectScalingY: 1
+  m_AffectScalingZ: 1
+  m_IsContraintActive: 1
+  m_IsLocked: 1
+  m_Sources: []
 --- !u!1 &1173743175
 GameObject:
   m_ObjectHideFlags: 0
@@ -509,8 +512,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 237.2, y: 0}
-  m_SizeDelta: {x: -474.4, y: 0}
+  m_AnchoredPosition: {x: 233.2, y: 0}
+  m_SizeDelta: {x: -466.4, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1173743177
 MonoBehaviour:
@@ -746,7 +749,7 @@ GameObject:
   - component: {fileID: 1587821962}
   - component: {fileID: 1587821964}
   m_Layer: 5
-  m_Name: Text
+  m_Name: TxtConsole
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -768,8 +771,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 81.39995, y: 0}
-  m_SizeDelta: {x: 29.2, y: 0}
+  m_AnchoredPosition: {x: 83.39999, y: 0.000022888184}
+  m_SizeDelta: {x: -113.6673, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1587821962
 MonoBehaviour:
@@ -840,7 +843,7 @@ GameObject:
   - component: {fileID: 1672419751}
   - component: {fileID: 1672419750}
   m_Layer: 5
-  m_Name: Button
+  m_Name: ConnectBtn
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -861,10 +864,10 @@ RectTransform:
   m_Father: {fileID: 891051120}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0.5, y: 0.5}
-  m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -120, y: 285}
-  m_SizeDelta: {x: 160, y: 30}
+  m_AnchorMin: {x: 0, y: 1}
+  m_AnchorMax: {x: 0, y: 1}
+  m_AnchoredPosition: {x: 238.00885, y: -29}
+  m_SizeDelta: {x: 410.0177, y: 30}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1672419750
 MonoBehaviour:
@@ -909,19 +912,7 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 1672419751}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 1672419748}
-        m_TargetAssemblyTypeName: Assets.Ably.Examples.TestApp, Assembly-CSharp
-        m_MethodName: 
-        m_Mode: 1
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 1
+      m_Calls: []
 --- !u!114 &1672419751
 MonoBehaviour:
   m_ObjectHideFlags: 0

@@ -9,8 +9,10 @@ namespace Assets.Ably.Examples
 {
     public class TestApp : MonoBehaviour
     {
-        AblyRealtime ably;
-        public Text TextContent;
+        private AblyRealtime _ably;
+        private Text _textContent;
+        private Button _connectButton;
+
         void Start()
         {
             AddComponents();
@@ -20,7 +22,9 @@ namespace Assets.Ably.Examples
         // Add components 
         void AddComponents()
         {
-
+            _textContent = GameObject.Find("TxtConsole").GetComponent<Text>();
+            _connectButton = GameObject.Find("ConnectBtn").GetComponent<Button>();
+            _connectButton.onClick.AddListener(OnConnectClickHandler);
         }
 
         void InitializeAbly()
@@ -59,8 +63,9 @@ namespace Assets.Ably.Examples
         // }
 
 
-        public void OnConnectClick()
+        void OnConnectClickHandler()
         {
+            LogAndDisplay("On connect clicked");
             var options = new ClientOptions();
             options.Key = "";
             // this will disable the library trying to subscribe to network state notifications
@@ -69,9 +74,9 @@ namespace Assets.Ably.Examples
             options.CaptureCurrentSynchronizationContext = true;
             options.CustomContext = SynchronizationContext.Current;
 
-            ably = new AblyRealtime(options);
+            _ably = new AblyRealtime(options);
 
-            ably.Connection.On(ConnectionEvent.Connected, args =>
+            _ably.Connection.On(ConnectionEvent.Connected, args =>
             {
                 LogAndDisplay("Connected to ably");
             });
@@ -80,7 +85,7 @@ namespace Assets.Ably.Examples
         void LogAndDisplay(string message)
         {
             Debug.Log(message);
-            TextContent.text = $"{TextContent.text}\n{message}";
+            _textContent.text = $"{_textContent.text}\n{message}";
         }
 
         void Update()
