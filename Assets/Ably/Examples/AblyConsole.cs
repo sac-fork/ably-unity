@@ -8,7 +8,7 @@ using UnityEngine.UI;
 
 namespace Assets.Ably.Examples
 {
-    public class TestApp : MonoBehaviour
+    public class AblyConsole : MonoBehaviour
     {
         private AblyRealtime _ably;
         private Text _textContent;
@@ -31,12 +31,11 @@ namespace Assets.Ably.Examples
 
         void InitializeAbly()
         {
-            LogAndDisplay("Initialized Ably Object");
+            LogAndDisplay("Initializing Ably Object");
             var options = new ClientOptions();
             options.Key = _apiKey;
             // this will disable the library trying to subscribe to network state notifications
             options.AutomaticNetworkStateMonitoring = false;
-
             options.CaptureCurrentSynchronizationContext = true;
             options.AutoConnect = false;
             options.CustomContext = SynchronizationContext.Current;
@@ -70,8 +69,8 @@ namespace Assets.Ably.Examples
                     default:
                         throw new ArgumentOutOfRangeException();
                 }
-
             });
+            LogAndDisplay("Initialized Ably Object");
         }
 
 
