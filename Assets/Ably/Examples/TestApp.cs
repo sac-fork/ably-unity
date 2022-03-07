@@ -1,3 +1,4 @@
+using System;
 using System.Threading;
 using Cysharp.Threading.Tasks;
 using IO.Ably;
@@ -12,9 +13,7 @@ namespace Assets.Ably.Examples
         private AblyRealtime _ably;
         private Text _textContent;
         private Button _connectButton;
-        private Text _connectBtnText;
         private static string _apiKey = "";
-
 
         void Start()
         {
@@ -26,14 +25,13 @@ namespace Assets.Ably.Examples
         void AddComponents()
         {
             _textContent = GameObject.Find("TxtConsole").GetComponent<Text>();
-            _connectBtnText = GameObject.Find("ConnectBtnText").GetComponent<Text>();
             _connectButton = GameObject.Find("ConnectBtn").GetComponent<Button>();
             _connectButton.onClick.AddListener(OnConnectClickHandler);
         }
 
         void InitializeAbly()
         {
-            LogAndDisplay("On connect clicked");
+            LogAndDisplay("Initialized Ably Object");
             var options = new ClientOptions();
             options.Key = _apiKey;
             // this will disable the library trying to subscribe to network state notifications
@@ -44,21 +42,41 @@ namespace Assets.Ably.Examples
             options.CustomContext = SynchronizationContext.Current;
 
             _ably = new AblyRealtime(options);
+            _ably.Connection.On(args =>
+            {
+                LogAndDisplay($"Connection State is {args.Current}");
+                _connectButton.GetComponentInChildren<Text>().text = args.Current.ToString();
+                var connectBtnImage = _connectButton.GetComponent<Image>();
+                switch (args.Current)
+                {
+                    case ConnectionState.Initialized:
+                        connectBtnImage.color = Color.white;
+                        break;
+                    case ConnectionState.Connecting:
+                        connectBtnImage.color = Color.gray;
+                        break;
+                    case ConnectionState.Connected:
+                        connectBtnImage.color = Color.green;
+                        break;
+                    case ConnectionState.Disconnected:
+                        connectBtnImage.color = Color.yellow;
+                        break;
+                    case ConnectionState.Suspended:
+                    case ConnectionState.Closing:
+                    case ConnectionState.Closed:
+                    case ConnectionState.Failed:
+                        connectBtnImage.color = Color.red;
+                        break;
+                    default:
+                        throw new ArgumentOutOfRangeException();
+                }
+
+            });
         }
 
 
         void OnConnectClickHandler()
         {
-            _ably.Connection.On( args =>
-            {
-                LogAndDisplay($"Connection State is {args.Current}");
-                _connectButton.GetComponentInChildren<Text>().text = args.Current.ToString();
-                if (args.Current == ConnectionState.Connected)
-                {
-                    _connectButton.GetComponent<Image>().color = Color.green;
-                }
-            });
-
             _ably.Connect();
         }
 
@@ -70,20 +88,10 @@ namespace Assets.Ably.Examples
 
         void Update()
         {
-            // errorText.text = text;
-            // image.color = color;
-        
             if (Input.GetKeyDown(KeyCode.RightArrow))
             {
-                Debug.Log("Clicked left arrow");
-                LogAndDisplay("Hi there");
+                LogAndDisplay("Clicked left arrow");
             }
-        
-            // if (Input.GetKeyDown(KeyCode.Space))
-            // {
-            //     var channel = ably.Channels.Get("notifications");
-            //     channel.Publish("greeting", "hello!");
-            // }
         }
     }
 }
