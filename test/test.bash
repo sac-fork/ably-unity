@@ -1,2 +1,3 @@
 echo "Hello there"
-echo "Ending hello there"
+dotnet --info
+echo "Ending hello there" 
