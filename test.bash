@@ -1,2 +1,3 @@
-echo "Hello there"
-echo "Ending hello there"
+echo "External hello"
+pwd
+echo "External hello there"
