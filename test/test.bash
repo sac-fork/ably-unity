@@ -1,7 +1,3 @@
 echo "Hello there"
-dotnet --info
-cd ..
-pwd
-ls
-./test.bash
+curl google.com
 echo "Ending hello there" 
